@@ -33,6 +33,8 @@ The machine need to be associated to a role with the following policy
 - Inline Policies: this custom one
 
 
+
+
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -72,6 +74,7 @@ if you want to know more about [chocolatey click here](https://chocolatey.org/) 
 
 
     docker pull 123456789012.dkr.ecr.us-east-2.amazonaws.com/mysourcerepo
+    
 - tag the image 
 
 
@@ -82,7 +85,9 @@ if you want to know more about [chocolatey click here](https://chocolatey.org/) 
 
 
     PS C:\Users\Administrator> Invoke-Expression -Command (aws ecr get-login --no-include-email --region us-east-2 --registry-ids 111111111111)
+    
     Login Succeeded
+    
     PS C:\Users\Administrator> docker push 111111111111.dkr.ecr.us-east-2.amazonaws.com/mydestinationrepo
 
 
