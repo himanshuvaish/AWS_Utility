@@ -30,6 +30,7 @@ The machine need to be associated to a role with the following policy
 
 - Managed Policies: AmazonEC2ContainerServiceforEC2Role 
 - Inline Policies: this custom one
+
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -46,6 +47,7 @@ The machine need to be associated to a role with the following policy
             }
         ]
     }
+    
 ## Install the aws cli
 
 You need to install the aws cli, currently in the image is not installed by default. It is possible doing a cut and past of these 2 commands in a PowerShell 
@@ -59,10 +61,15 @@ if you want to know more about [chocolatey click here](https://chocolatey.org/) 
 - acquire the permissions to operate 
     Invoke-Expression -Command (aws ecr get-login --no-include-email --region us-east-2)
 - pull the source docker image that you want to copy
+
     docker pull 123456789012.dkr.ecr.us-east-2.amazonaws.com/mysourcerepo
+    
 - tag the image 
+
     docker tag 123456789012.dkr.ecr.us-east-2.amazonaws.com/mysourcerepo 111111111111.dkr.ecr.us-east-2.amazonaws.com/mydestinationrepo
+
 - acquire the permission of the destination account and push the image
+
     PS C:\Users\Administrator> Invoke-Expression -Command (aws ecr get-login --no-include-email --region us-east-2 --registry-ids 111111111111)
     Login Succeeded
     PS C:\Users\Administrator> docker push 111111111111.dkr.ecr.us-east-2.amazonaws.com/mydestinationrepo
