@@ -1,0 +1,65 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "Create a Registry with permissions for another account",
+  "Parameters" : {
+    "RegistryName" : {
+        "Description" : "Please enter the Registry Name",
+        "Type": "String",
+        "MinLength" : "5",
+        "MaxLength" : "30",
+        "Default" : "mypersonalrepo"
+    },
+    "AccountId" : {
+        "Description" : "Please enter the accountid from where will be possible push and pull",
+        "Type": "String",
+        "MinLength" : "12",
+        "MaxLength" : "12",
+        "Default" : "123456789012"
+    }
+  },
+
+  "Resources" : {
+      "MyRepository": {
+        "Type": "AWS::ECR::Repository",
+        "Properties": {
+          "RepositoryName" :  { "Ref" : "RegistryName" },
+          "RepositoryPolicyText" : {
+              "Version": "2008-10-17",
+              "Statement": [
+                  {
+                      "Sid": "devaccount",
+                      "Effect": "Allow",
+                      "Principal": {
+                          "AWS": {"Fn::Join" : [ ":", [ "arn:aws:iam:",  { "Ref" : "AccountId" }, "root" ] ]}
+                      },
+                      "Action": [
+                          "ecr:GetDownloadUrlForLayer",
+                          "ecr:BatchGetImage",
+                          "ecr:BatchCheckLayerAvailability",
+                          "ecr:PutImage",
+                          "ecr:InitiateLayerUpload",
+                          "ecr:UploadLayerPart",
+                          "ecr:CompleteLayerUpload",
+                          "ecr:DescribeRepositories",
+                          "ecr:GetRepositoryPolicy",
+                          "ecr:ListImages",
+                          "ecr:DescribeImages",
+                          "ecr:DeleteRepository",
+                          "ecr:BatchDeleteImage",
+                          "ecr:SetRepositoryPolicy",
+                          "ecr:DeleteRepositoryPolicy"
+                      ]
+                    }
+                  ]
+                }
+          }
+        }
+      },
+      "Outputs" : {
+        "RegistryURI" : {
+            "Value" : { "Ref" : "MyRepository" },
+            "Description" : "the id of the repo"
+        }
+    }
+  }
