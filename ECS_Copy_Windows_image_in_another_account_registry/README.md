@@ -19,8 +19,8 @@ The whole example is in Ohio region us-east-2 adapt to your case
 The Windows machine used is created from **Microsoft Windows Server 2016 Base with Containers**
 
 # Step 1 Create the registry in the Destination Account
-1. Use the CloudFormation template for the registry creation provided in this example
-2. After go in the Amazon ECS and copy the URI , you will need in the next step will be like
+Use the CloudFormation template for the registry creation provided in this example
+After go in the Amazon ECS and copy the URI , you will need in the next step will be like
 
     123456789012.dkr.ecr.us-east-2.amazonaws.com/mysourcerepo
 
