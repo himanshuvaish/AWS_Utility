@@ -23,27 +23,27 @@ What do you need if you want to do this in an automatic way?
 ## The powershell script
 Here the explanation of the completely not interactive powershell
 
-  iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 install the chocolatey package manager from internet
 
-  choco install awscli -y
+    choco install awscli -y
 
 install the amazon comman line using the package manager installed the step before
 
-  $env:path = "C:\Program Files\Amazon\AWSCLI\;$env:path"
+    $env:path = "C:\Program Files\Amazon\AWSCLI\;$env:path"
 
 change the environment path variable so it is possible use the awscli without reload the shell
 
-  Add-Content diskparam.json "[{`"DeviceName`": `"/dev/sda1`",`"Ebs`" :{`"Encrypted`" : true,`"DeleteOnTermination`": true} } ]"
+    Add-Content diskparam.json "[{`"DeviceName`": `"/dev/sda1`",`"Ebs`" :{`"Encrypted`" : true,`"DeleteOnTermination`": true} } ]"
 
 prepare a json file with the encrypted information
 
-  $env:myid=Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
+    $env:myid=Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
 
 recover the instance id and put in a variable so it can be used in the next command
 
-  aws ec2 create-image --region ${AWS::Region} --reboot --instance-id $env:myid --name mysolution-encrypted --block-device-mappings file://diskparam.json --description Encrypted-image-win2016
+    aws ec2 create-image --region ${AWS::Region} --reboot --instance-id $env:myid --name mysolution-encrypted --block-device-mappings file://diskparam.json --description Encrypted-image-win2016
 
 run the command to create an encrypted image of the running instance
 
