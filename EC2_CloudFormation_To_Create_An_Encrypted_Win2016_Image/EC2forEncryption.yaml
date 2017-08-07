@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: "2010-09-09"
+#this is a role without perissions
+
+Mappings:
+  RegionMap:  #AMI Id fo Microsoft Windows Server 2016 Base with Containers
+    us-east-1: # Virginia
+      amiid: "ami-25ece233"
+    eu-west-1: #Ireland
+      amiid: "ami-03816c7a"
+    eu-west-2: # London
+      amiid: "ami-5c8e9838"
+
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CADES-create-image-encrypted
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        -
+          PolicyName: "CreateImage"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: "ec2:CreateImage"
+                Resource: "*"
+
+  MyInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties :
+      InstanceProfileName: !Join [ -, [ !Ref "AWS::Region" , !Ref "AWS::StackName" ] ]
+      Path: "/"
+      Roles:
+        - Ref: "MyRole"
+
+#Tha machine will be created in the default vpc with the default security group
+  MyEC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      IamInstanceProfile: !Join [ -, [ !Ref "AWS::Region" , !Ref "AWS::StackName" ] ]
+      ImageId: !FindInMap [ RegionMap, !Ref "AWS::Region", amiid ]
+      InstanceType : "t2.micro"
+      Tags:
+        -
+          Key: Name
+          Value: TMP for Encryption creation purpose
+        -
+          Key: Owner
+          Value: Giuseppe Borgese
+      UserData:
+        Fn::Base64: !Sub |
+          <powershell>
+              iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+              choco install awscli -y
+              $env:path = "C:\Program Files\Amazon\AWSCLI\;$env:path"
+              Add-Content diskparam.json "[{`"DeviceName`": `"/dev/sda1`",`"Ebs`" :{`"Encrypted`" : true,`"DeleteOnTermination`": true} } ]"
+              $env:myid=Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
+              aws ec2 create-image --region ${AWS::Region} --reboot --instance-id $env:myid --name mysolution-encrypted --block-device-mappings file://diskparam.json --description Encrypted-image-win2016
+          </powershell>
+          <persist>true</persist>

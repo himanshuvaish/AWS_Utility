@@ -8,7 +8,7 @@
         "Type": "String",
         "MinLength" : "5",
         "MaxLength" : "30",
-        "Default" : "mypersonalrepo"
+        "Default" : "mypersonaldestinationrepo"
     },
     "AccountId" : {
         "Description" : "Please enter the accountid from where will be possible push and pull",
