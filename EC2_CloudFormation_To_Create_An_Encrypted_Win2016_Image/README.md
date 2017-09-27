@@ -49,3 +49,8 @@ run the command to create an encrypted image of the running instance
 
 # Conclusions
 Around 5 minutes after the CloudFormation templace creation you can see the new image in the AMIs ==> Owned by Me and you can delete the CloudFormation Stack , in this way the ec2 windows machine created will be erased but the image will persist. 
+
+# To add 
+It is necessary add this command before the ami creation, to have enable the userdata when you use the generated image
+
+    C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\InitializeInstance.ps1 –Schedule
